@@ -47,7 +47,6 @@ object sparkOpt01_BroadCastJoin {
 
         df3.explain()
         df4.explain()
-
         //while(true){} //用来防止进程结束，来查看spark UI
     }
 }
