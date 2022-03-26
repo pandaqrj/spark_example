@@ -10,6 +10,6 @@ object InitTable {
         val spark = SparkSession.builder().master("local[*]").getOrCreate()
         val df1 = spark.read.textFile("data/data.txt")
             .selectExpr("split(value, ', ')[0] as user_id", "cast(split(value, ', ')[1] as double) as sales_num")
-        df1.repartition(6).write.saveAsTable("user_sales_order_detail")
+        df1.repartition(6).write.mode("overwrite").save("spark-warehouse/user_sales_order_detail")
     }
 }

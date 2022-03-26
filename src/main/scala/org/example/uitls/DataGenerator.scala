@@ -19,6 +19,10 @@ object DataGenerator {
             writer.write(s"102, ${(Random.nextDouble() * Random.nextInt(100)).formatted("%.2f")}\n")
             if( i % 1000000 == 0) println(i)
         }
+        for(i <- 1 to 50000000){
+            writer.write(s"104, ${(Random.nextDouble() * Random.nextInt(100)).formatted("%.2f")}\n")
+            if( i % 1000000 == 0) println(i)
+        }
         writer.close()
 
     }

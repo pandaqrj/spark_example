@@ -18,7 +18,7 @@ object sparkOpt02_DataSkew {
               |           ,sum(sales_num)
               |       from user_sales_order_detail t1
               |   group by user_id
-              |""".stripMargin).show()
+              |""".stripMargin).write.mode("overwrite").save("spark-warehouse/dws_user_sales")
         while(true){}
     }
 }
