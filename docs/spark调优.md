@@ -190,12 +190,12 @@ CREATE TABLE IF NOT EXISTS BUCK1(
     user_id String,
     sales_num Double
 )
-CLUSTERED BY into 100 buckets;
+CLUSTERED BY user_id SORTED BY user_id into 100 buckets;
 CREATE TABLE IF NOT EXISTS BUCK2(
     user_id String,
     user_name String
 )
-CLUSTERED BY into 100 buckets;
+CLUSTERED BY user_id SORTED BY user_id into 100 buckets;
 ```
 然后直接JOIN。对于不是分桶表的数据，可以先做转换:
 ```scala
