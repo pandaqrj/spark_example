@@ -67,8 +67,6 @@ SparkSubmit.main(args) =>
                                                                             run() =>
                                             userClassThread.join() 加入线程池 =>
 ```
-
-
 ## 2. 组件通信
     (1) Driver => Executor
     (2) Executor => Driver

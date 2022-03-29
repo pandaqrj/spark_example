@@ -3,7 +3,7 @@ package org.example.optimization
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object sparkOpt01_BroadCastJoin {
+object spark03_Opt_BroadCastJoin {
     def main(args: Array[String]): Unit = {
 
         // TODO - BroadCastJoin 并查看执行计划

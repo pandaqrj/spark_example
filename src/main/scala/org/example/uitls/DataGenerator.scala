@@ -25,6 +25,12 @@ object DataGenerator {
         }
         writer.close()
 
+        val writeFile1 = new File("data/user.txt")
+        val writer1 = new BufferedWriter(new FileWriter(writeFile1))
+        for(i <- 1 to 1000000){
+            writer1.write(s"${Random.nextInt(1000000)}\n")
+            if( i % 1000000 == 0) println(i)
+        }
+        writer1.close()
     }
-
 }
