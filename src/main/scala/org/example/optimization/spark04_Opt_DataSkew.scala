@@ -22,51 +22,56 @@ object spark04_Opt_DataSkew {
         val df2 = spark.read.parquet("spark-warehouse/user_info").distinct().toDF()
 
 
-//        // TODO - 1.抽样获取倾斜KEY
-//        df.cache()
-//        val dfSample = df.select("user_id")
-//            .sample(withReplacement = false, 0.01)
-//            .groupBy("user_id")
-//            .count()
-//            .orderBy(col("count").desc)
-//            .limit(100)
-//        dfSample.show()
-//
-//        // TODO - 2.打散倾斜的KEY
-//        import spark.implicits._
-//        val newOrder = df.mapPartitions(iter => {
-//            iter.map(x => {
-//                val userId = x.getAs[String]("user_id")
-//                val salesNum = x.getAs[Double]("sales_num")
-//                val randInt = Random.nextInt(36)
-//                NewOrder(userId,
-//                    salesNum,
-//                    randInt + "_" + userId)
-//            })
-//        }).toDF()
-//
-//        // TODO - 3.小表扩容
-//        val newUser = df2.flatMap(x => {
-//            val list = ArrayBuffer[NewUser]()
-//            val userId = x.getAs[String]("user_id")
-//            for(i <- 0 to 35){
-//                list.append(NewUser(userId, i + "_" + userId))
-//            }
-//            list
-//        }).toDF()
-//
-//        // TODO - 4.倾斜的大KEY与扩容后的表进行join
-//        newOrder.createOrReplaceTempView("newOrder")
-//        newUser.createOrReplaceTempView("newUser")
-//        spark.sql(
-//            """
-//              |    select t2.UserId
-//              |          ,sum(t1.salesNum)
-//              |      from newOrder t1
-//              | left join newUser t2
-//              |        on t1.newUserId = t2.newUserId
-//              |  group by t2.UserId
-//              |""".stripMargin).show()
+        // TODO - 1.抽样获取倾斜KEY
+        df.cache()
+        val dfSample = df.select("user_id")
+            .sample(withReplacement = false, 0.01)
+            .groupBy("user_id")
+            .count()
+            .orderBy(col("count").desc)
+            .limit(100)
+        dfSample.show()
+
+        // TODO - 2.打散倾斜的KEY
+        import spark.implicits._
+        val newOrder = df.mapPartitions(iter => {
+            iter.map(x => {
+                val userId = x.getAs[String]("user_id")
+                val salesNum = x.getAs[Double]("sales_num")
+                val newUserId = if(List("104", "102", "101").contains(userId)) Random.nextInt(36) + "_" + userId else userId
+                NewOrder(userId, salesNum, newUserId)
+            })
+        }).toDF()
+
+        // TODO - 3.小表对倾斜的KEY扩容
+        val newUser = df2.flatMap(x => {
+            val list = ArrayBuffer[NewUser]()
+            val userId = x.getAs[String]("user_id")
+
+            if(List("104", "102", "101").contains(userId)) {
+                val newUserId = Random.nextInt(36) + "_" + userId
+                for(i <- 0 to 35){
+                    list.append(NewUser(userId, newUserId))
+                }
+            }
+            else
+                list.append(NewUser(userId, userId))
+
+            list
+        }).toDF()
+
+        // TODO - 4.倾斜的大KEY与扩容后的表进行join
+        newOrder.createOrReplaceTempView("newOrder")
+        newUser.createOrReplaceTempView("newUser")
+        spark.sql(
+            """
+              |    select t2.UserId
+              |          ,sum(t1.salesNum)
+              |      from newOrder t1
+              | left join newUser t2
+              |        on t1.newUserId = t2.newUserId
+              |  group by t2.UserId
+              |""".stripMargin).show()
 
         // TODO - 5.交给Spark自己处理，会直接使用预聚合和MAPJOIN
         df.createOrReplaceTempView("user_sales_order_detail")

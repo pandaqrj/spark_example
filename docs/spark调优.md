@@ -81,6 +81,12 @@ SparkSQL默认并发度：**spark.sql.shuffle.partitions** 默认为200。
 数据倾斜只会发生在shuffle过程中。
 这里给大家罗列一些常用的并且可能会触发shuffle操作的算子：**distinct、groupByKey、reduceByKey、aggregateByKey、join、cogroup、repartition**等。
 出现数据倾斜时，可能就是你的代码中使用了这些算子中的某一个所导致的。
+
+spark.sql.adaptive.skewJoin.enabled true
+
+spark.sql.adaptive.skewJoin.skewedPartitionFactor 5
+
+spark.sql.adaptive.skewJoin.skewedPartitionThresholdInBytes 256MB
 ### 4.1 sample抽样定位倾斜的KEY
 **sample()** 算子抽样。
 ```scala
