@@ -49,7 +49,7 @@ object Spark08_RDD_KryoSER {
         /**
          * 消耗Storage内存 2G左右。成功执行！
          */
-        rdd.persist(StorageLevel.MEMORY_ONLY_SER_2)
+        rdd.persist(StorageLevel.MEMORY_ONLY_SER)
         rdd.checkpoint()
         rdd.foreachPartition(( p: Iterator[order] ) => p.foreach(item => println(item.userId)))
         while(true){}

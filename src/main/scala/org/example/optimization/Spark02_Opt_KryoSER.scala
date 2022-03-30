@@ -23,7 +23,7 @@ object Spark02_Opt_KryoSER {
             .map(_.split(", "))
             .map(x => order(x(0), x(1).toDouble))
 
-        rdd.persist(StorageLevel.MEMORY_ONLY_SER_2)
+        rdd.persist(StorageLevel.MEMORY_ONLY_SER)
         rdd.checkpoint()
         rdd.foreachPartition((p: Iterator[order]) => p.foreach(item => println(item.userId)))
         while (true) {}
