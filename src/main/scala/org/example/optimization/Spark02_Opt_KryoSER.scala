@@ -4,10 +4,7 @@ import org.apache.spark.storage.StorageLevel
 import org.apache.spark.{SparkConf, SparkContext}
 
 object Spark02_Opt_KryoSER {
-    case class order(
-                        userId: String,
-                        salesNum: Double
-                    )
+    case class order(userId: String, salesNum: Double)
 
     def main(args: Array[String]): Unit = {
 

@@ -22,15 +22,15 @@ object spark04_Opt_DataSkew {
         val df2 = spark.read.parquet("spark-warehouse/user_info").distinct().toDF()
 
 
-        // TODO - 1.抽样获取倾斜KEY
-        df.cache()
-        val dfSample = df.select("user_id")
-            .sample(withReplacement = false, 0.01)
-            .groupBy("user_id")
-            .count()
-            .orderBy(col("count").desc)
-            .limit(100)
-        dfSample.show()
+//        // TODO - 1.抽样获取倾斜KEY
+//        df.cache()
+//        val dfSample = df.select("user_id")
+//            .sample(withReplacement = false, 0.01)
+//            .groupBy("user_id")
+//            .count()
+//            .orderBy(col("count").desc)
+//            .limit(100)
+//        dfSample.show()
 
         // TODO - 2.打散倾斜的KEY
         import spark.implicits._
@@ -73,21 +73,21 @@ object spark04_Opt_DataSkew {
               |  group by t2.UserId
               |""".stripMargin).show()
 
-        // TODO - 5.交给Spark自己处理，会直接使用预聚合和MAPJOIN
-        df.createOrReplaceTempView("user_sales_order_detail")
-        df2.createOrReplaceTempView("user_info")
-        spark.sql(
-            """
-              |     select t2.user_id, sum(t1.sales_num) as sales_num
-              |       from user_sales_order_detail t1
-              |  left join user_info t2
-              |         on t1.user_id = t2.user_id
-              |   group by t2.user_id
-              |""".stripMargin).write.mode("overwrite").save("spark-warehouse/dws_user_sales_detail")
+//        // TODO - 5.交给Spark自己处理，会直接使用预聚合和MAPJOIN
+//        df.createOrReplaceTempView("user_sales_order_detail")
+//        df2.createOrReplaceTempView("user_info")
+//        spark.sql(
+//            """
+//              |     select t2.user_id, sum(t1.sales_num) as sales_num
+//              |       from user_sales_order_detail t1
+//              |  left join user_info t2
+//              |         on t1.user_id = t2.user_id
+//              |   group by t2.user_id
+//              |""".stripMargin).write.mode("overwrite").save("spark-warehouse/dws_user_sales_detail")
 
         // TODO - 6.结论：以寻常的场景来看，使用map端聚合和mapjoin来解决数据倾斜的问题就可以了。所谓的二次聚合在一般场景的效果来看不如spark自己优化的效果。
 
-        // while(true){}
+         while(true){}
 
     }
 }

@@ -1,4 +1,4 @@
-package org.example.acc
+package org.example.rdd.acc
 
 import org.apache.spark.{SparkConf, SparkContext}
 
