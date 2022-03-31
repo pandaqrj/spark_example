@@ -3,7 +3,7 @@ package org.example.sql
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 
-object SparkSql01_api {
+object Spark01_api {
 
     def main(args: Array[String]): Unit = {
 
