@@ -9,7 +9,6 @@ object Spark01_api {
 
         // TODO - SparkSql API测试
         val spark = SparkSession.builder()
-            .config("spark.sql.shuffle.partitions", "36")
             .master("local[*]")
             .getOrCreate()
         val df = spark.read.parquet("spark-warehouse/user_sales_order_detail")
